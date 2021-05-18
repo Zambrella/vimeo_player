@@ -16,6 +16,9 @@ class VimeoPlayer extends StatefulWidget {
   final int? position;
   final Widget spinner;
   final Color backgroundLoadingColor;
+  final Color playedColor;
+  final Color backgroundColor;
+  final Color bufferedColor;
 
   VimeoPlayer({
     required this.id,
@@ -24,6 +27,9 @@ class VimeoPlayer extends StatefulWidget {
     this.position,
     required this.spinner,
     required this.backgroundLoadingColor,
+    required this.playedColor,
+    required this.backgroundColor,
+    required this.bufferedColor,
     Key? key,
   }) : super(key: key);
 
@@ -396,8 +402,10 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
               Container(
                 width: 46,
                 alignment: Alignment(0, 0),
-                child:
-                    Text(value.position.inMinutes.toString() + ':' + (value.position.inSeconds - value.position.inMinutes * 60).toString()),
+                child: Text(
+                  value.position.inMinutes.toString() + ':' + (value.position.inSeconds - value.position.inMinutes * 60).toString(),
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               Container(
                 height: 20,
@@ -406,9 +414,9 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                   _controller!,
                   allowScrubbing: true,
                   colors: VideoProgressColors(
-                    playedColor: Color(0xFF22A3D2),
-                    backgroundColor: Color(0x5515162B),
-                    bufferedColor: Color(0x5583D8F7),
+                    playedColor: widget.playedColor,
+                    backgroundColor: widget.backgroundColor,
+                    bufferedColor: widget.bufferedColor,
                   ),
                   padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
                 ),
@@ -416,8 +424,10 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
               Container(
                 width: 46,
                 alignment: Alignment(0, 0),
-                child:
-                    Text(value.duration.inMinutes.toString() + ':' + (value.duration.inSeconds - value.duration.inMinutes * 60).toString()),
+                child: Text(
+                  value.duration.inMinutes.toString() + ':' + (value.duration.inSeconds - value.duration.inMinutes * 60).toString(),
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           );
