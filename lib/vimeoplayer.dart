@@ -237,13 +237,18 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                             color: Colors.white,
                           ),
                     onPressed: () {
-                      setState(() async {
+                      setState(() {
+                        // If video is playing, pause
+                        // If video is not playing, then play and close overlay after a delay
                         if (_controller!.value.isPlaying) {
                           _controller!.pause();
                         } else {
                           _controller!.play();
-                          await Future.delayed(const Duration(seconds: 2));
-                          _overlay = false;
+                          Future.delayed(const Duration(seconds: 2), () {
+                            setState(() {
+                              _overlay = false;
+                            });
+                          });
                         }
                       });
                     }),
