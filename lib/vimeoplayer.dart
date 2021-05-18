@@ -192,8 +192,12 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
             // Изменение размера блоков дабл тапа. Нужно для открытия кнопок
             // "Во весь экран" и "Качество" при включенном overlay
             onTap: () {
-              setState(() {
+              setState(() async {
                 _overlay = !_overlay;
+                if (_controller!.value.isPlaying) {
+                  await Future.delayed(const Duration(seconds: 2));
+                  _overlay = false;
+                }
                 if (_overlay) {
                   doubleTapRHeight = videoHeight! - 36;
                   doubleTapLHeight = videoHeight! - 10;
@@ -225,8 +229,12 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
             // Изменение размера блоков дабл тапа. Нужно для открытия кнопок
             // "Во весь экран" и "Качество" при включенном overlay
             onTap: () {
-              setState(() {
+              setState(() async {
                 _overlay = !_overlay;
+                if (_overlay) {
+                  await Future.delayed(const Duration(seconds: 2));
+                  _overlay = !_overlay;
+                }
                 if (_overlay) {
                   doubleTapRHeight = videoHeight! - 36;
                   doubleTapLHeight = videoHeight! - 10;
