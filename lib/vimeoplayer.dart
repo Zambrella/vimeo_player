@@ -286,10 +286,13 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                 setState(() {});
               }),
         ),
-        Container(
-          //===== Ползунок =====//
-          margin: EdgeInsets.only(top: videoHeight! - 40, left: videoMargin), //CHECK IT
-          child: _videoOverlaySlider(),
+        Positioned(
+          bottom: 22,
+          child: Container(
+            //===== Ползунок =====//
+            margin: EdgeInsets.only(left: videoMargin), //CHECK IT
+            child: _videoOverlaySlider(),
+          ),
         )
       ],
     );
@@ -339,40 +342,42 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
               ),
               Container(
                 width: 30,
-                child: IconButton(
-                    alignment: AlignmentDirectional.center,
-                    icon: Icon(
-                      Icons.fullscreen,
-                      size: 22,
-                      color: Colors.white,
-                    ),
-                    onPressed: () async {
-                      //Создание новой страницы с плеером во весь экран,
-                      // предача данных в плеер и возвращение позиции при
-                      // возвращении обратно. Пока что мы не вернулись из
-                      // фуллскрина - программа в ожидании
-                      position = await Navigator.of(
-                        context,
-                        rootNavigator: true,
-                      ).push(PageRouteBuilder(
-                          opaque: false,
-                          pageBuilder: (BuildContext context, _, __) => FullscreenPlayer(
-                              id: _id,
-                              autoPlay: true,
-                              controller: _controller,
-                              position: _controller!.value.position.inSeconds,
-                              initFuture: initFuture,
-                              qualityValue: _qualityValue),
-                          transitionsBuilder: (___, Animation<double> animation, ____, Widget child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: ScaleTransition(scale: animation, child: child),
-                            );
-                          }));
-                      setState(() {
-                        _seek = true;
-                      });
-                    }),
+                child: Center(
+                  child: IconButton(
+                      alignment: AlignmentDirectional.center,
+                      icon: Icon(
+                        Icons.fullscreen,
+                        size: 22,
+                        color: Colors.white,
+                      ),
+                      onPressed: () async {
+                        //Создание новой страницы с плеером во весь экран,
+                        // предача данных в плеер и возвращение позиции при
+                        // возвращении обратно. Пока что мы не вернулись из
+                        // фуллскрина - программа в ожидании
+                        position = await Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).push(PageRouteBuilder(
+                            opaque: false,
+                            pageBuilder: (BuildContext context, _, __) => FullscreenPlayer(
+                                id: _id,
+                                autoPlay: true,
+                                controller: _controller,
+                                position: _controller!.value.position.inSeconds,
+                                initFuture: initFuture,
+                                qualityValue: _qualityValue),
+                            transitionsBuilder: (___, Animation<double> animation, ____, Widget child) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: ScaleTransition(scale: animation, child: child),
+                              );
+                            }));
+                        setState(() {
+                          _seek = true;
+                        });
+                      }),
+                ),
               )
             ],
           );
