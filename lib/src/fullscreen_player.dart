@@ -108,7 +108,7 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         //Управление шириной и высотой видео
-                        double delta =
+                        final delta =
                             MediaQuery.of(context).size.width - MediaQuery.of(context).size.height * _controller!.value.aspectRatio;
                         if (MediaQuery.of(context).orientation == Orientation.portrait || delta < 0) {
                           videoHeight = MediaQuery.of(context).size.width / _controller!.value.aspectRatio;
@@ -135,18 +135,16 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
                         SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
 
                         //Отрисовка элементов плеера
-                        return Center(
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                height: videoHeight,
-                                width: videoWidth,
-                                margin: EdgeInsets.only(left: videoMargin),
-                                child: VideoPlayer(_controller!),
-                              ),
-                              if (_overlay) _videoOverlay(),
-                            ],
-                          ),
+                        return Stack(
+                          children: <Widget>[
+                            Container(
+                              height: videoHeight,
+                              width: videoWidth,
+                              margin: EdgeInsets.only(left: videoMargin),
+                              child: VideoPlayer(_controller!),
+                            ),
+                            _videoOverlay(),
+                          ],
                         );
                       } else {
                         return Center(
@@ -203,97 +201,99 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
 
   //================================ OVERLAY ================================//
   Widget _videoOverlay() {
-    return Stack(
-      children: <Widget>[
-        GestureDetector(
-          child: Center(
-            child: Container(
-              width: videoWidth,
-              height: videoHeight,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerRight,
-                  end: Alignment.centerLeft,
-                  colors: [const Color(0x662F2C47), const Color(0x662F2C47)],
+    return _overlay
+        ? Stack(
+            children: <Widget>[
+              GestureDetector(
+                child: Center(
+                  child: Container(
+                    width: videoWidth,
+                    height: videoHeight,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft,
+                        colors: [const Color(0x662F2C47), const Color(0x662F2C47)],
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
-        Center(
-          child: IconButton(
-              padding: EdgeInsets.only(
-                top: videoHeight! / 2 - 50,
-                bottom: videoHeight! / 2 - 30,
+              Center(
+                child: IconButton(
+                    padding: EdgeInsets.only(
+                      top: videoHeight! / 2 - 50,
+                      bottom: videoHeight! / 2 - 30,
+                    ),
+                    icon: _controller!.value.isPlaying
+                        ? Icon(
+                            Icons.pause,
+                            size: 60.0,
+                            color: Colors.white,
+                          )
+                        : Icon(
+                            Icons.play_arrow,
+                            size: 60.0,
+                            color: Colors.white,
+                          ),
+                    onPressed: () {
+                      setState(() {
+                        // If video is playing, pause
+                        // If video is not playing, then play and close overlay after a delay
+                        if (_controller!.value.isPlaying) {
+                          _controller!.pause();
+                        } else {
+                          _controller!.play();
+                          Future.delayed(const Duration(seconds: 2), () {
+                            setState(() {
+                              _overlay = false;
+                            });
+                          });
+                        }
+                      });
+                    }),
               ),
-              icon: _controller!.value.isPlaying
-                  ? Icon(
-                      Icons.pause,
-                      size: 60.0,
-                      color: Colors.white,
-                    )
-                  : Icon(
-                      Icons.play_arrow,
-                      size: 60.0,
+              Container(
+                margin: EdgeInsets.only(top: videoHeight! - 80, left: videoWidth! + videoMargin - 50),
+                child: IconButton(
+                    alignment: AlignmentDirectional.center,
+                    icon: Icon(
+                      Icons.fullscreen,
+                      size: 30.0,
                       color: Colors.white,
                     ),
-              onPressed: () {
-                setState(() {
-                  // If video is playing, pause
-                  // If video is not playing, then play and close overlay after a delay
-                  if (_controller!.value.isPlaying) {
-                    _controller!.pause();
-                  } else {
-                    _controller!.play();
-                    Future.delayed(const Duration(seconds: 2), () {
+                    onPressed: () {
                       setState(() {
-                        _overlay = false;
+                        _controller!.pause();
+                        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
+                        SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top, SystemUiOverlay.bottom]);
                       });
-                    });
-                  }
-                });
-              }),
-        ),
-        Container(
-          margin: EdgeInsets.only(top: videoHeight! - 80, left: videoWidth! + videoMargin - 50),
-          child: IconButton(
-              alignment: AlignmentDirectional.center,
-              icon: Icon(
-                Icons.fullscreen,
-                size: 30.0,
-                color: Colors.white,
+                      Navigator.pop(context, _controller!.value.position.inSeconds);
+                    }),
               ),
-              onPressed: () {
-                setState(() {
-                  _controller!.pause();
-                  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
-                  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top, SystemUiOverlay.bottom]);
-                });
-                Navigator.pop(context, _controller!.value.position.inSeconds);
-              }),
-        ),
-        Container(
-          margin: EdgeInsets.only(left: videoWidth! + videoMargin - 48),
-          child: IconButton(
-              icon: Icon(
-                Icons.settings,
-                size: 26.0,
-                color: Colors.white,
+              Container(
+                margin: EdgeInsets.only(left: videoWidth! + videoMargin - 48),
+                child: IconButton(
+                    icon: Icon(
+                      Icons.settings,
+                      size: 26.0,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      position = _controller!.value.position.inSeconds;
+                      _seek = true;
+                      _settingModalBottomSheet(context);
+                      setState(() {});
+                    }),
               ),
-              onPressed: () {
-                position = _controller!.value.position.inSeconds;
-                _seek = true;
-                _settingModalBottomSheet(context);
-                setState(() {});
-              }),
-        ),
-        Container(
-          //===== Ползунок =====//
-          margin: EdgeInsets.only(top: videoHeight! - 40, left: videoMargin), //CHECK IT
-          child: _videoOverlaySlider(),
-        )
-      ],
-    );
+              Container(
+                //===== Ползунок =====//
+                margin: EdgeInsets.only(top: videoHeight! - 40, left: videoMargin), //CHECK IT
+                child: _videoOverlaySlider(),
+              )
+            ],
+          )
+        : const Center();
   }
 
   //=================== ПОЛЗУНОК ===================//
