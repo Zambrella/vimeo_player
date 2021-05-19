@@ -64,14 +64,6 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
   double? videoWidth;
   late double videoMargin;
 
-  //Переменные под зоны дабл-тапа
-  double doubleTapRMargin = 36;
-  double doubleTapRWidth = 400;
-  double doubleTapRHeight = 160;
-  double doubleTapLMargin = 10;
-  double doubleTapLWidth = 400;
-  double doubleTapLHeight = 160;
-
   @override
   void initState() {
     //Create class
@@ -126,7 +118,7 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                       videoMargin = (MediaQuery.of(context).size.width - videoWidth!) / 2;
                     }
 
-                    //Начинаем с того же места, где и остановились при смене качества
+                    //We start from the same place where we left off when changing quality
                     if (_seek && _controller!.value.duration.inSeconds > 2) {
                       _controller!.seekTo(Duration(seconds: position!));
                       _seek = false;
@@ -149,7 +141,7 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                               },
                               child: VideoPlayer(_controller!)),
                         ),
-                        _videoOverlay(),
+                        if (_overlay) _videoOverlay(),
                       ],
                     );
                   } else {
@@ -204,127 +196,119 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
 
   //================================ OVERLAY ================================//
   Widget _videoOverlay() {
-    return _overlay
-        ? Stack(
-            children: <Widget>[
-              GestureDetector(
-                child: Center(
-                  child: Container(
-                    width: videoWidth,
-                    height: videoHeight,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.centerRight,
-                        end: Alignment.centerLeft,
-                        colors: [const Color(0x662F2C47), const Color(0x662F2C47)],
-                      ),
-                    ),
-                  ),
+    return Stack(
+      children: <Widget>[
+        GestureDetector(
+          child: Center(
+            child: Container(
+              width: videoWidth,
+              height: videoHeight,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerRight,
+                  end: Alignment.centerLeft,
+                  colors: [const Color(0x662F2C47), const Color(0x662F2C47)],
                 ),
               ),
-              Center(
-                child: IconButton(
-                    padding: EdgeInsets.only(top: videoHeight! / 2 - 30, bottom: videoHeight! / 2 - 30),
-                    icon: _controller!.value.isPlaying
-                        ? Icon(
-                            Icons.pause,
-                            size: 60.0,
-                            color: Colors.white,
-                          )
-                        : Icon(
-                            Icons.play_arrow,
-                            size: 60.0,
-                            color: Colors.white,
-                          ),
-                    onPressed: () {
-                      setState(() {
-                        // If video is playing, pause
-                        // If video is not playing, then play and close overlay after a delay
-                        if (_controller!.value.isPlaying) {
-                          _controller!.pause();
-                        } else {
-                          _controller!.play();
-                          Future.delayed(const Duration(seconds: 2), () {
-                            setState(() {
-                              _overlay = false;
-                            });
-                          });
-                        }
-                      });
-                    }),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: videoHeight! - 70, left: videoWidth! + videoMargin - 50),
-                child: IconButton(
-                    alignment: AlignmentDirectional.center,
-                    icon: Icon(
-                      Icons.fullscreen,
-                      size: 30.0,
+            ),
+          ),
+        ),
+        Center(
+          child: IconButton(
+              padding: EdgeInsets.only(top: videoHeight! / 2 - 30, bottom: videoHeight! / 2 - 30),
+              icon: _controller!.value.isPlaying
+                  ? Icon(
+                      Icons.pause,
+                      size: 60.0,
+                      color: Colors.white,
+                    )
+                  : Icon(
+                      Icons.play_arrow,
+                      size: 60.0,
                       color: Colors.white,
                     ),
-                    onPressed: () async {
+              onPressed: () {
+                setState(() {
+                  // If video is playing, pause
+                  // If video is not playing, then play and close overlay after a delay
+                  if (_controller!.value.isPlaying) {
+                    _controller!.pause();
+                  } else {
+                    _controller!.play();
+                    Future.delayed(const Duration(seconds: 2), () {
                       setState(() {
-                        _controller!.pause();
-                      });
-                      //Создание новой страницы с плеером во весь экран,
-                      // предача данных в плеер и возвращение позиции при
-                      // возвращении обратно. Пока что мы не вернулись из
-                      // фуллскрина - программа в ожидании
-                      position = await Navigator.of(
-                        context,
-                        rootNavigator: true,
-                      ).push(PageRouteBuilder(
-                          opaque: false,
-                          pageBuilder: (BuildContext context, _, __) => FullscreenPlayer(
-                              id: _id,
-                              autoPlay: true,
-                              controller: _controller,
-                              position: _controller!.value.position.inSeconds,
-                              initFuture: initFuture,
-                              qualityValue: _qualityValue),
-                          transitionsBuilder: (___, Animation<double> animation, ____, Widget child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: ScaleTransition(scale: animation, child: child),
-                            );
-                          }));
-                      setState(() async {
-                        _controller!.play();
-                        _seek = true;
-                        await Future.delayed(const Duration(seconds: 2));
                         _overlay = false;
                       });
-                    }),
+                    });
+                  }
+                });
+              }),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: videoHeight! - 70, left: videoWidth! + videoMargin - 50),
+          child: IconButton(
+              alignment: AlignmentDirectional.center,
+              icon: Icon(
+                Icons.fullscreen,
+                size: 30.0,
+                color: Colors.white,
               ),
-              Container(
-                margin: EdgeInsets.only(left: videoWidth! + videoMargin - 48),
-                child: IconButton(
-                    icon: Icon(
-                      Icons.settings,
-                      size: 26.0,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      position = _controller!.value.position.inSeconds;
-                      _seek = true;
-                      _settingModalBottomSheet(context);
-                      setState(() {});
-                    }),
+              onPressed: () async {
+                setState(() {
+                  _controller!.pause();
+                });
+                //Создание новой страницы с плеером во весь экран,
+                // предача данных в плеер и возвращение позиции при
+                // возвращении обратно. Пока что мы не вернулись из
+                // фуллскрина - программа в ожидании
+                position = await Navigator.of(
+                  context,
+                  rootNavigator: true,
+                ).push(PageRouteBuilder(
+                    opaque: false,
+                    pageBuilder: (BuildContext context, _, __) => FullscreenPlayer(
+                        id: _id,
+                        autoPlay: true,
+                        controller: _controller,
+                        position: _controller!.value.position.inSeconds,
+                        initFuture: initFuture,
+                        qualityValue: _qualityValue),
+                    transitionsBuilder: (___, Animation<double> animation, ____, Widget child) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: ScaleTransition(scale: animation, child: child),
+                      );
+                    }));
+                setState(() async {
+                  _controller!.play();
+                  _seek = true;
+                  await Future.delayed(const Duration(seconds: 2));
+                  _overlay = false;
+                });
+              }),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: videoWidth! + videoMargin - 48),
+          child: IconButton(
+              icon: Icon(
+                Icons.settings,
+                size: 26.0,
+                color: Colors.white,
               ),
-              Container(
-                //===== Ползунок =====//
-                margin: EdgeInsets.only(top: videoHeight! - 26, left: videoMargin), //CHECK IT
-                child: _videoOverlaySlider(),
-              )
-            ],
-          )
-        : Center(
-            child: MentorVideoProgressIndicator(
-              videoWidth: videoWidth!,
-              videoHeight: videoHeight!,
-              controller: _controller!,
-            ),
-          );
+              onPressed: () {
+                position = _controller!.value.position.inSeconds;
+                _seek = true;
+                _settingModalBottomSheet(context);
+                setState(() {});
+              }),
+        ),
+        Container(
+          //===== Ползунок =====//
+          margin: EdgeInsets.only(top: videoHeight! - 26, left: videoMargin), //CHECK IT
+          child: _videoOverlaySlider(),
+        )
+      ],
+    );
   }
 
   //=================== ПОЛЗУНОК ===================//
