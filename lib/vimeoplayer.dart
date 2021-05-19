@@ -287,7 +287,7 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
               }),
         ),
         Positioned(
-          bottom: 22,
+          bottom: 5,
           child: Container(
             //===== Ползунок =====//
             margin: EdgeInsets.only(left: videoMargin), //CHECK IT
@@ -318,7 +318,7 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
               ),
               Container(
                 height: 20,
-                width: videoWidth! - (46 + 46 + 30),
+                width: videoWidth! - (46 + 46 + 50),
                 child: VideoProgressIndicator(
                   _controller!,
                   allowScrubbing: true,
@@ -341,7 +341,7 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                 ),
               ),
               Container(
-                width: 30,
+                width: 50,
                 child: Center(
                   child: IconButton(
                       alignment: AlignmentDirectional.center,
