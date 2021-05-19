@@ -254,9 +254,6 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                 color: Colors.white,
               ),
               onPressed: () async {
-                setState(() {
-                  _controller!.pause();
-                });
                 //Создание новой страницы с плеером во весь экран,
                 // предача данных в плеер и возвращение позиции при
                 // возвращении обратно. Пока что мы не вернулись из
@@ -279,11 +276,14 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                         child: ScaleTransition(scale: animation, child: child),
                       );
                     }));
-                setState(() async {
+                setState(() {
                   _controller!.play();
                   _seek = true;
-                  await Future.delayed(const Duration(seconds: 2));
-                  _overlay = false;
+                  Future.delayed(const Duration(seconds: 2), () {
+                    setState(() {
+                      _overlay = false;
+                    });
+                  });
                 });
               }),
         ),
@@ -334,9 +334,9 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                   _controller!,
                   allowScrubbing: true,
                   colors: VideoProgressColors(
-                    playedColor: widget.playedColor,
-                    backgroundColor: widget.backgroundColor,
-                    bufferedColor: widget.bufferedColor,
+                    playedColor: Colors.white,
+                    backgroundColor: Colors.white.withOpacity(0.3),
+                    bufferedColor: Colors.white.withOpacity(0.6),
                   ),
                   padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
                 ),
@@ -362,35 +362,5 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
   void dispose() {
     _controller!.dispose();
     super.dispose();
-  }
-}
-
-class MentorVideoProgressIndicator extends StatelessWidget {
-  const MentorVideoProgressIndicator({
-    Key? key,
-    required this.videoWidth,
-    required this.videoHeight,
-    required VideoPlayerController controller,
-  })   : _controller = controller,
-        super(key: key);
-
-  final double videoWidth;
-  final double videoHeight;
-  final VideoPlayerController _controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 10,
-      child: VideoProgressIndicator(
-        _controller,
-        allowScrubbing: true,
-        colors: VideoProgressColors(
-          playedColor: Colors.white,
-          backgroundColor: Colors.white.withOpacity(0.3),
-          bufferedColor: Colors.white.withOpacity(0.6),
-        ),
-      ),
-    );
   }
 }
