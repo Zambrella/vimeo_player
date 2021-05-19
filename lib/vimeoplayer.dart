@@ -341,6 +341,8 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                             }));
                         setState(() {
                           _seek = true;
+                          SystemChrome.setPreferredOrientations([DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
+                          SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top, SystemUiOverlay.bottom]);
                         });
                       }),
                 ),
