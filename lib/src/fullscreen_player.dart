@@ -135,16 +135,18 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
                         SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
 
                         //Отрисовка элементов плеера
-                        return Stack(
-                          children: <Widget>[
-                            Container(
-                              height: videoHeight,
-                              width: videoWidth,
-                              margin: EdgeInsets.only(left: videoMargin),
-                              child: VideoPlayer(_controller!),
-                            ),
-                            if (_overlay) _videoOverlay(),
-                          ],
+                        return Center(
+                          child: Stack(
+                            children: <Widget>[
+                              Container(
+                                height: videoHeight,
+                                width: videoWidth,
+                                margin: EdgeInsets.only(left: videoMargin),
+                                child: VideoPlayer(_controller!),
+                              ),
+                              if (_overlay) _videoOverlay(),
+                            ],
+                          ),
                         );
                       } else {
                         return Center(
