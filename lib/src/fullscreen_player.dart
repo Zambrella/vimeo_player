@@ -80,14 +80,6 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
     super.initState();
   }
 
-  // I think this is needed
-  @override
-  void dispose() {
-    controller!.dispose();
-    _controller!.dispose();
-    super.dispose();
-  }
-
   //Ослеживаем пользовательского нажатие назад и переводим
   // на экран с плеером не в режиме фуллскрин, возвращаем ориентацию
   Future<bool> _onWillPop() {
@@ -105,6 +97,7 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        backgroundColor: Colors.black,
         body: Center(
           child: Stack(
             alignment: AlignmentDirectional.center,
@@ -150,7 +143,7 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
                               margin: EdgeInsets.only(left: videoMargin),
                               child: VideoPlayer(_controller!),
                             ),
-                            _videoOverlay(),
+                            if (_overlay) _videoOverlay(),
                           ],
                         );
                       } else {
