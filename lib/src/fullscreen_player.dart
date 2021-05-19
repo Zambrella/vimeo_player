@@ -250,7 +250,80 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
                     }),
               ),
               Container(
-                margin: EdgeInsets.only(top: videoHeight! - 80, left: videoWidth! + videoMargin - 50),
+                margin: EdgeInsets.only(left: videoWidth! + videoMargin - 48),
+                child: IconButton(
+                    icon: Icon(
+                      Icons.settings,
+                      size: 26.0,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      position = _controller!.value.position.inSeconds;
+                      _seek = true;
+                      _settingModalBottomSheet(context);
+                      setState(() {});
+                    }),
+              ),
+              Positioned(
+                bottom: 2,
+                child: Container(
+                  //===== Ползунок =====//
+                  margin: EdgeInsets.only(top: videoHeight! - 40, left: videoMargin), //CHECK IT
+                  child: _videoOverlaySlider(),
+                ),
+              )
+            ],
+          )
+        : const Center();
+  }
+
+  //=================== ПОЛЗУНОК ===================//
+  Widget _videoOverlaySlider() {
+    return ValueListenableBuilder(
+      valueListenable: _controller!,
+      builder: (context, VideoPlayerValue value, child) {
+        if (!value.hasError && value.isInitialized) {
+          return Row(
+            children: <Widget>[
+              const SizedBox(
+                width: 22,
+              ),
+              Container(
+                width: 46,
+                alignment: Alignment(0, 0),
+                child: Text(
+                  value.position.inMinutes.toString() +
+                      ':' +
+                      (value.position.inSeconds - value.position.inMinutes * 60).toString().toString().padLeft(2, '0'),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              Container(
+                height: 20,
+                width: videoWidth! - (22 + 46 + 46 + 60),
+                child: VideoProgressIndicator(
+                  _controller!,
+                  allowScrubbing: true,
+                  colors: VideoProgressColors(
+                    playedColor: Colors.white,
+                    backgroundColor: Colors.white.withOpacity(0.3),
+                    bufferedColor: Colors.white.withOpacity(0.6),
+                  ),
+                  padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+                ),
+              ),
+              Container(
+                width: 46,
+                alignment: Alignment(0, 0),
+                child: Text(
+                  value.duration.inMinutes.toString() +
+                      ':' +
+                      (value.duration.inSeconds - value.duration.inMinutes * 60).toString().padLeft(2, '0'),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              Container(
+                width: 60,
                 child: IconButton(
                     alignment: AlignmentDirectional.center,
                     icon: Icon(
@@ -266,73 +339,7 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
                       });
                       Navigator.pop(context, _controller!.value.position.inSeconds);
                     }),
-              ),
-              Container(
-                margin: EdgeInsets.only(left: videoWidth! + videoMargin - 48),
-                child: IconButton(
-                    icon: Icon(
-                      Icons.settings,
-                      size: 26.0,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      position = _controller!.value.position.inSeconds;
-                      _seek = true;
-                      _settingModalBottomSheet(context);
-                      setState(() {});
-                    }),
-              ),
-              Container(
-                //===== Ползунок =====//
-                margin: EdgeInsets.only(top: videoHeight! - 40, left: videoMargin), //CHECK IT
-                child: _videoOverlaySlider(),
               )
-            ],
-          )
-        : const Center();
-  }
-
-  //=================== ПОЛЗУНОК ===================//
-  Widget _videoOverlaySlider() {
-    return ValueListenableBuilder(
-      valueListenable: _controller!,
-      builder: (context, VideoPlayerValue value, child) {
-        if (!value.hasError && value.isInitialized) {
-          return Row(
-            children: <Widget>[
-              Container(
-                width: 46,
-                alignment: Alignment(0, 0),
-                child: Text(
-                  value.position.inMinutes.toString() +
-                      ':' +
-                      (value.position.inSeconds - value.position.inMinutes * 60).toString().toString().padLeft(2, '0'),
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              Container(
-                height: 20,
-                width: videoWidth! - 92,
-                child: VideoProgressIndicator(
-                  _controller!,
-                  allowScrubbing: true,
-                  colors: VideoProgressColors(
-                    playedColor: Colors.white,
-                    backgroundColor: Colors.white.withOpacity(0.3),
-                    bufferedColor: Colors.white.withOpacity(0.6),
-                  ),
-                  padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-                ),
-              ),
-              Container(
-                  width: 46,
-                  alignment: Alignment(0, 0),
-                  child: Text(
-                    value.duration.inMinutes.toString() +
-                        ':' +
-                        (value.duration.inSeconds - value.duration.inMinutes * 60).toString().padLeft(2, '0'),
-                    style: TextStyle(color: Colors.white),
-                  )),
             ],
           );
         } else {

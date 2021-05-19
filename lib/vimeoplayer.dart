@@ -234,43 +234,6 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                 });
               }),
         ),
-        // Container(
-        //   margin: EdgeInsets.only(top: videoHeight! - 70, left: videoWidth! + videoMargin - 50),
-        //   child: IconButton(
-        //       alignment: AlignmentDirectional.center,
-        //       icon: Icon(
-        //         Icons.fullscreen,
-        //         size: 30.0,
-        //         color: Colors.white,
-        //       ),
-        //       onPressed: () async {
-        //         //Создание новой страницы с плеером во весь экран,
-        //         // предача данных в плеер и возвращение позиции при
-        //         // возвращении обратно. Пока что мы не вернулись из
-        //         // фуллскрина - программа в ожидании
-        //         position = await Navigator.of(
-        //           context,
-        //           rootNavigator: true,
-        //         ).push(PageRouteBuilder(
-        //             opaque: false,
-        //             pageBuilder: (BuildContext context, _, __) => FullscreenPlayer(
-        //                 id: _id,
-        //                 autoPlay: true,
-        //                 controller: _controller,
-        //                 position: _controller!.value.position.inSeconds,
-        //                 initFuture: initFuture,
-        //                 qualityValue: _qualityValue),
-        //             transitionsBuilder: (___, Animation<double> animation, ____, Widget child) {
-        //               return FadeTransition(
-        //                 opacity: animation,
-        //                 child: ScaleTransition(scale: animation, child: child),
-        //               );
-        //             }));
-        //         setState(() {
-        //           _seek = true;
-        //         });
-        //       }),
-        // ),
         Container(
           margin: EdgeInsets.only(left: videoWidth! + videoMargin - 48),
           child: IconButton(
