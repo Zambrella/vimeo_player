@@ -132,7 +132,6 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
                           _controller!.seekTo(Duration(seconds: position!));
                           _seek = false;
                         }
-                        SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
 
                         //Отрисовка элементов плеера
                         return Stack(
