@@ -288,7 +288,7 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
         ),
         Container(
           //===== Ползунок =====//
-          margin: EdgeInsets.only(top: videoHeight! - 26, left: videoMargin), //CHECK IT
+          margin: EdgeInsets.only(top: videoHeight! - 40, left: videoMargin), //CHECK IT
           child: _videoOverlaySlider(),
         )
       ],
