@@ -343,6 +343,7 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                     alignment: AlignmentDirectional.center,
                     icon: Icon(
                       Icons.fullscreen,
+                      size: 22,
                       color: Colors.white,
                     ),
                     onPressed: () async {
