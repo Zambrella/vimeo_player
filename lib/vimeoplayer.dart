@@ -315,7 +315,7 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
               ),
               Container(
                 height: 20,
-                width: videoWidth! - 46 + 46 + 30,
+                width: videoWidth! - (46 + 46 + 30),
                 child: VideoProgressIndicator(
                   _controller!,
                   allowScrubbing: true,
