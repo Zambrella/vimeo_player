@@ -74,7 +74,7 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
 
     setState(() {
       SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
-      SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+      SystemChrome.setEnabledSystemUIOverlays([]);
     });
 
     super.initState();

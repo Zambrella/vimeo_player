@@ -277,13 +277,7 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                       );
                     }));
                 setState(() {
-                  _controller!.play();
                   _seek = true;
-                  Future.delayed(const Duration(seconds: 2), () {
-                    setState(() {
-                      _overlay = false;
-                    });
-                  });
                 });
               }),
         ),
