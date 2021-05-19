@@ -16,9 +16,6 @@ class VimeoPlayer extends StatefulWidget {
   final int? position;
   final Widget spinner;
   final Color backgroundLoadingColor;
-  final Color playedColor;
-  final Color backgroundColor;
-  final Color bufferedColor;
 
   VimeoPlayer({
     required this.id,
@@ -27,9 +24,6 @@ class VimeoPlayer extends StatefulWidget {
     this.position,
     required this.spinner,
     required this.backgroundLoadingColor,
-    required this.playedColor,
-    required this.backgroundColor,
-    required this.bufferedColor,
     Key? key,
   }) : super(key: key);
 
@@ -204,11 +198,7 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
               width: videoWidth,
               height: videoHeight,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerRight,
-                  end: Alignment.centerLeft,
-                  colors: [const Color(0x662F2C47), const Color(0x662F2C47)],
-                ),
+                color: Colors.black.withOpacity(0.2),
               ),
             ),
           ),
@@ -317,7 +307,9 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                 width: 46,
                 alignment: Alignment(0, 0),
                 child: Text(
-                  value.position.inMinutes.toString() + ':' + (value.position.inSeconds - value.position.inMinutes * 60).toString(),
+                  value.position.inMinutes.toString() +
+                      ':' +
+                      (value.position.inSeconds - value.position.inMinutes * 60).toString().padLeft(2, '0'),
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -339,7 +331,9 @@ class _VimeoPlayerState extends State<VimeoPlayer> {
                 width: 46,
                 alignment: Alignment(0, 0),
                 child: Text(
-                  value.duration.inMinutes.toString() + ':' + (value.duration.inSeconds - value.duration.inMinutes * 60).toString(),
+                  value.duration.inMinutes.toString() +
+                      ':' +
+                      (value.duration.inSeconds - value.duration.inMinutes * 60).toString().padLeft(2, '0'),
                   style: TextStyle(color: Colors.white),
                 ),
               ),

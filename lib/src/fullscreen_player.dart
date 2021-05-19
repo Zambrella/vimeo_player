@@ -210,11 +210,7 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
                     width: videoWidth,
                     height: videoHeight,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.centerRight,
-                        end: Alignment.centerLeft,
-                        colors: [const Color(0x662F2C47), const Color(0x662F2C47)],
-                      ),
+                      color: Colors.black.withOpacity(0.2),
                     ),
                   ),
                 ),
@@ -308,7 +304,9 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
                 width: 46,
                 alignment: Alignment(0, 0),
                 child: Text(
-                  value.position.inMinutes.toString() + ':' + (value.position.inSeconds - value.position.inMinutes * 60).toString(),
+                  value.position.inMinutes.toString() +
+                      ':' +
+                      (value.position.inSeconds - value.position.inMinutes * 60).toString().toString().padLeft(2, '0'),
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -330,7 +328,9 @@ class _FullscreenPlayerState extends State<FullscreenPlayer> {
                   width: 46,
                   alignment: Alignment(0, 0),
                   child: Text(
-                    value.duration.inMinutes.toString() + ':' + (value.duration.inSeconds - value.duration.inMinutes * 60).toString(),
+                    value.duration.inMinutes.toString() +
+                        ':' +
+                        (value.duration.inSeconds - value.duration.inMinutes * 60).toString().padLeft(2, '0'),
                     style: TextStyle(color: Colors.white),
                   )),
             ],
